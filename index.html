@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.60.0/phaser.min.js" integrity="sha512-YQL0GVx/Too3vZjBl9plePRIYsRnd1s8N6QOvXPdZ+JMH2mtRTLQXGUDGjNW6zr1HUgcOIury67IvWe91oeEwQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>D1 Assignment</title>
+    <script>
+        class Intro extends Phaser.Scene{
+            constructor(){
+                super("intro")
+            }
+            preload() {
+                this.load.path = './assets/';
+                this.load.image("raccoontrumpet", "trumpetRaccoon.png");
+                this.load.image("logo", "logo.jpg");
+                
+            }
+            create() {
+                
+                this.add.image(170,300,"raccoontrumpet").setScale(0.25);
+                this.add.image(300,80,"logo").setScale(0.5);
+                this.input.on('pointerdown', ()=> this.scene.start('body'));
+                let shape = this.add.circle(400, 200, 20, 0x696969);
+                this.tweens.add({
+                    targets: shape,
+                    x: 405,
+                    ease: 'Sine.easeInOut',
+                    yoyo: true,
+                    repeat: -1,
+                    duration: 300
+                })
+            }
+
+        }
+
+        class Body extends Phaser.Scene{
+            constructor(){
+                super("body");
+            }
+            preload(){
+                this.load.path = './assets/';
+                this.load.image("scene", "scene.PNG")
+                this.load.audio("tank", "tank.wav");
+            }
+            create() {
+                this.add.image(300,300, "scene").setScale(0.5);
+                let thingy = this.sound.add("tank");
+                thingy.play();
+                this.input.on('pointerdown', ()=> this.scene.start('menu'));
+            }
+        }
+
+        class Menu extends Phaser.Scene{
+            constructor(){
+                super("menu");
+            }
+            preload(){
+                this.load.path = "./assets/";
+                this.load.image("foraging", "foraging.jpg");
+                this.load.audio("life", "life.wav");
+            }
+            create() {
+                this.add.circle(300, 200, 20, 0xfacade);
+                
+                this.add.text(140, 240, "Foraging").setScale(1.8);
+                this.add.text(140, 100, "Start").setScale(1.5);
+                this.input.on('pointerdown', ()=> {
+                    this.add.image(140,240,"foraging");
+                    let scream = this.sound.add("life");
+                    scream.play();
+                    this.time.delayedCall(1000, ()=> this.cameras.main.fade(1000, 0, 0, 0))});
+                
+            }
+        }
+
+        new Phaser.Game({
+            width: 640,
+            height: 480,
+            scene: [Intro, Body, Menu],
+        });
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
